@@ -80,6 +80,35 @@ export class TaskLinkedList {
     return this.size;
   }
 
+  getCompletedCount(): number {
+    let count = 0;
+    for (const node of this) {
+      if (node.completed) count += 1;
+    }
+    return count;
+  }
+
+  /** Elimina todos los nodos completados en un solo recorrido (igual que el backend). */
+  clearCompleted(): number {
+    let removed = 0;
+    let prev: TaskNode | null = null;
+    let node = this.head;
+    while (node !== null) {
+      const next = node.next;
+      if (node.completed) {
+        if (prev === null) this.head = next;
+        else prev.next = next;
+        if (node === this.tail) this.tail = prev;
+        this.size -= 1;
+        removed += 1;
+      } else {
+        prev = node;
+      }
+      node = next;
+    }
+    return removed;
+  }
+
   [Symbol.iterator](): Iterator<TaskNode> {
     let node = this.head;
     return {
